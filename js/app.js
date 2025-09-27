@@ -1,9 +1,8 @@
 const API_KEY = "8a19b8745c254680a387e705faa6d5f3"; // Your API key
 const BASE_URL = "https://api.football-data.org/v4";
+const PREMIER_LEAGUE_ID = 2021;
 
-// Premier League ID in football-data.org
-const PREMIER_LEAGUE_ID = 2021; 
-
+// Fetch helper
 async function fetchAPI(endpoint) {
   const response = await fetch(`${BASE_URL}${endpoint}`, {
     headers: { "X-Auth-Token": API_KEY }
@@ -15,7 +14,7 @@ async function fetchAPI(endpoint) {
   return response.json();
 }
 
-// Load Standings
+// Load Premier League standings
 async function loadStandings() {
   const data = await fetchAPI(`/competitions/${PREMIER_LEAGUE_ID}/standings`);
   const body = document.getElementById("standings-body");
@@ -26,8 +25,8 @@ async function loadStandings() {
 
   table.forEach((row) => {
     let color = '';
-    if(row.position <= 4) color = 'color:#28a745;font-weight:600;'; // Top 4
-    else if(row.position >= table.length - 2) color = 'color:#dc3545;font-weight:600;'; // Bottom 3
+    if(row.position <= 4) color = 'color:#28a745;font-weight:600;'; 
+    else if(row.position >= table.length - 2) color = 'color:#dc3545;font-weight:600;';
 
     const tr = document.createElement("tr");
     tr.innerHTML = `
@@ -48,7 +47,7 @@ async function loadStandings() {
   });
 }
 
-// Load Upcoming Fixtures
+// Load upcoming matches
 async function loadFixtures() {
   const data = await fetchAPI(`/competitions/${PREMIER_LEAGUE_ID}/matches?status=SCHEDULED`);
   const list = document.getElementById("fixtures-list");
@@ -62,14 +61,15 @@ async function loadFixtures() {
   });
 }
 
-// Load Recent Results
+// Load recent results into table
 async function loadResults() {
   const data = await fetchAPI(`/competitions/${PREMIER_LEAGUE_ID}/matches?status=FINISHED`);
-  const list = document.getElementById("results-list");
-  list.innerHTML = "";
+  const body = document.getElementById("results-body");
+  body.innerHTML = "";
   if(!data || !data.matches.length) return;
 
-  const recent = data.matches.slice(-10);
+  const recent = data.matches.slice(-10).reverse(); // last 10 matches, most recent first
+
   recent.forEach((match) => {
     let homeScore = match.score.fullTime.home;
     let awayScore = match.score.fullTime.away;
@@ -77,9 +77,22 @@ async function loadResults() {
     if(homeScore > awayScore) homeScore = `<span style="color:#28a745;font-weight:600">${homeScore}</span>`;
     else if(awayScore > homeScore) awayScore = `<span style="color:#28a745;font-weight:600">${awayScore}</span>`;
 
-    const li = document.createElement("li");
-    li.innerHTML = `${match.utcDate.slice(0,10)}: ${match.homeTeam.name} ${homeScore} - ${awayScore} ${match.awayTeam.name}`;
-    list.appendChild(li);
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${match.utcDate.slice(0,10)}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <img src="${match.homeTeam.crest}" width="24" height="24"/> ${match.homeTeam.name}
+        </div>
+      </td>
+      <td>${homeScore} - ${awayScore}</td>
+      <td>
+        <div style="display:flex;align-items:center;gap:8px">
+          <img src="${match.awayTeam.crest}" width="24" height="24"/> ${match.awayTeam.name}
+        </div>
+      </td>
+    `;
+    body.appendChild(tr);
   });
 }
 
