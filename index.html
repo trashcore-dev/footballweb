@@ -58,30 +58,31 @@
         }
 
         .product-card {
-            background-color: white;
+            background-color: #000000; /* Black board */
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             margin: 1rem;
             width: 160px;
             text-align: center;
             padding: 0.8rem;
-            transition: transform 0.2s;
+            color: white;
+            animation: popRotate 1s ease-in-out infinite alternate;
         }
 
-        .product-card:hover {
-            transform: scale(1.05);
+        /* Pop with slight rotation */
+        @keyframes popRotate {
+            0% { transform: scale(1) rotate(0deg); }
+            50% { transform: scale(1.1) rotate(3deg); }
+            100% { transform: scale(1) rotate(0deg); }
         }
 
-        .product-name {
-            font-size: 1rem;
-            margin: 0.5rem 0;
-        }
+        /* Staggered animation delays */
+        .product-card:nth-child(1) { animation-delay: 0s; }
+        .product-card:nth-child(2) { animation-delay: 0.3s; }
+        .product-card:nth-child(3) { animation-delay: 0.6s; }
 
-        .product-price {
-            color: #ff4d4d;
-            font-weight: bold;
-            font-size: 1.1rem;
-        }
+        .product-name { font-size: 1rem; margin: 0.5rem 0; }
+        .product-price { color: #ff4d4d; font-weight: bold; font-size: 1.1rem; }
 
         .chat-button {
             display: inline-block;
@@ -96,27 +97,14 @@
             transition: background 0.2s;
         }
 
-        /* Specific colors for each product */
-        .pterodactyl-btn {
-            background-color: #8000ff; /* Purple */
-        }
-        .pterodactyl-btn:hover {
-            background-color: #5c00b3;
-        }
+        .pterodactyl-btn { background-color: #8000ff; }
+        .pterodactyl-btn:hover { background-color: #5c00b3; }
 
-        .whatsapp-btn {
-            background-color: #25D366; /* WhatsApp green */
-        }
-        .whatsapp-btn:hover {
-            background-color: #128C7E;
-        }
+        .whatsapp-btn { background-color: #25D366; }
+        .whatsapp-btn:hover { background-color: #128C7E; }
 
-        .website-btn {
-            background-color: #007BFF; /* Blue */
-        }
-        .website-btn:hover {
-            background-color: #0056b3;
-        }
+        .website-btn { background-color: #007BFF; }
+        .website-btn:hover { background-color: #0056b3; }
     </style>
 </head>
 <body>
