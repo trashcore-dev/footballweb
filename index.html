@@ -7,47 +7,115 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
             margin: 0;
             padding: 0;
+            background: linear-gradient(to bottom, #8000ff, #b266ff);
+            position: relative;
+            overflow-x: hidden;
         }
+
+        /* Animated waves */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 200%;
+            height: 200%;
+            background: repeating-linear-gradient(
+                45deg,
+                rgba(0, 0, 0, 0.05),
+                rgba(0, 0, 0, 0.05) 20px,
+                transparent 20px,
+                transparent 40px
+            );
+            animation: waveMove 15s linear infinite;
+            z-index: -1;
+        }
+
+        @keyframes waveMove {
+            0% { transform: translateX(0) translateY(0); }
+            50% { transform: translateX(-50px) translateY(30px); }
+            100% { transform: translateX(0) translateY(0); }
+        }
+
         header {
-            background-color: #ff4d4d;
+            background-color: #4b0082;
             color: white;
             text-align: center;
             padding: 1rem 0;
+            position: relative;
+            z-index: 1;
         }
+
         .container {
             display: flex;
             flex-wrap: wrap;
             justify-content: center;
             padding: 2rem;
+            position: relative;
+            z-index: 1;
         }
+
         .product-card {
             background-color: white;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
             margin: 1rem;
-            width: 200px;
+            width: 160px;
             text-align: center;
-            padding: 1rem;
+            padding: 0.8rem;
             transition: transform 0.2s;
         }
+
         .product-card:hover {
             transform: scale(1.05);
         }
-        .product-card img {
-            width: 100%;
-            border-radius: 8px;
-        }
+
         .product-name {
-            font-size: 1.1rem;
+            font-size: 1rem;
             margin: 0.5rem 0;
         }
+
         .product-price {
             color: #ff4d4d;
             font-weight: bold;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
+        }
+
+        .chat-button {
+            display: inline-block;
+            margin-top: 0.5rem;
+            padding: 0.5rem 1rem;
+            color: white;
+            font-size: 0.9rem;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background 0.2s;
+        }
+
+        /* Specific colors for each product */
+        .pterodactyl-btn {
+            background-color: #8000ff; /* Purple */
+        }
+        .pterodactyl-btn:hover {
+            background-color: #5c00b3;
+        }
+
+        .whatsapp-btn {
+            background-color: #25D366; /* WhatsApp green */
+        }
+        .whatsapp-btn:hover {
+            background-color: #128C7E;
+        }
+
+        .website-btn {
+            background-color: #007BFF; /* Blue */
+        }
+        .website-btn:hover {
+            background-color: #0056b3;
         }
     </style>
 </head>
@@ -58,27 +126,21 @@
 
     <div class="container">
         <div class="product-card">
-            <img src="https://via.placeholder.com/200x150" alt="Product 1">
-            <div class="product-name">Product 1</div>
-            <div class="product-price">$19.99</div>
+            <div class="product-name">Pterodactyl Panels</div>
+            <div class="product-price">$49.99</div>
+            <a href="https://wa.me/1234567890?text=Hi!%20I'm%20interested%20in%20Pterodactyl%20Panels" target="_blank" class="chat-button pterodactyl-btn">Chat with Owner</a>
         </div>
 
         <div class="product-card">
-            <img src="https://via.placeholder.com/200x150" alt="Product 2">
-            <div class="product-name">Product 2</div>
+            <div class="product-name">WhatsApp Bots</div>
             <div class="product-price">$29.99</div>
+            <a href="https://wa.me/1234567890?text=Hi!%20I'm%20interested%20in%20WhatsApp%20Bots" target="_blank" class="chat-button whatsapp-btn">Chat with Owner</a>
         </div>
 
         <div class="product-card">
-            <img src="https://via.placeholder.com/200x150" alt="Product 3">
-            <div class="product-name">Product 3</div>
-            <div class="product-price">$14.99</div>
-        </div>
-
-        <div class="product-card">
-            <img src="https://via.placeholder.com/200x150" alt="Product 4">
-            <div class="product-name">Product 4</div>
-            <div class="product-price">$9.99</div>
+            <div class="product-name">Website Codes</div>
+            <div class="product-price">$19.99</div>
+            <a href="https://wa.me/1234567890?text=Hi!%20I'm%20interested%20in%20Website%20Codes" target="_blank" class="chat-button website-btn">Chat with Owner</a>
         </div>
     </div>
 </body>
