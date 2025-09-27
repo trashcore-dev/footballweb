@@ -1,1 +1,63 @@
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #f5f5f5;
+}
 
+#container {
+  display: flex;
+  min-height: 100vh;
+}
+
+#sidebar {
+  background: #222;
+  color: #fff;
+  width: 250px;
+  padding: 20px;
+}
+
+#sidebar h2 {
+  margin-top: 0;
+}
+
+#sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+#sidebar li {
+  padding: 8px;
+  cursor: pointer;
+}
+
+#sidebar li:hover {
+  background: #444;
+}
+
+#content {
+  flex: 1;
+  padding: 20px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-bottom: 20px;
+}
+
+table th,
+table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+
+h2 {
+  margin-top: 0;
+}
+
+#fixtures ul,
+#news ul {
+  list-style: none;
+  padding: 0;
+}
