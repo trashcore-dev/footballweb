@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Premier League Dashboard</title>
-  <link rel="icon" href="assets/favicon.ico">
   <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
   <div id="container">
     <main id="content">
+
       <section id="standings">
         <h2>Premier League Standings</h2>
         <table>
@@ -35,8 +35,19 @@
 
       <section id="results">
         <h2>Recent Results</h2>
-        <ul id="results-list"></ul>
+        <table>
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Home</th>
+              <th>Score</th>
+              <th>Away</th>
+            </tr>
+          </thead>
+          <tbody id="results-body"></tbody>
+        </table>
       </section>
+
     </main>
   </div>
 
