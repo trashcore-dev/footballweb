@@ -1,126 +1,48 @@
-/* Root colors */
-:root {
-  --bg-dark: #0d1117;
-  --card-bg: #21262d;
-  --accent: #1f6feb;
-  --text-light: #c9d1d9;
-  --text-muted: #8b949e;
-  --hover-bg: #30363d;
-  --border-color: #30363d;
-  --winner-color: #28a745;
-  --loser-color: #dc3545;
-}
-
-/* General reset */
-body {
-  margin: 0;
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: var(--bg-dark);
-  color: var(--text-light);
-}
-
-/* Main container */
-#container {
-  display: flex;
-  flex-direction: column;
-  padding: 20px;
-  gap: 20px;
-}
-
-/* Section cards */
-section {
-  background: var(--card-bg);
-  padding: 20px;
-  border-radius: 12px;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.5);
-}
-
-/* Section headings */
-section h2 {
-  margin-top: 0;
-  color: var(--accent);
-  font-size: 20px;
-  margin-bottom: 15px;
-}
-
-/* Tables (Standings & Results) */
-table {
+/* Scrollable tables */
+section table {
   width: 100%;
   border-collapse: collapse;
+  display: block;
+  max-height: 400px; /* adjust height as needed */
+  overflow-y: auto;
 }
 
-th, td {
-  padding: 10px;
-  text-align: center;
-  border-bottom: 1px solid var(--border-color);
-  color: var(--text-light);
+section table thead {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
-th {
-  color: var(--text-muted);
-  font-weight: 600;
+section table tbody {
+  display: block;
+  width: 100%;
+  overflow-y: auto;
+  max-height: 350px; /* scrollable body */
 }
 
-tr:hover td {
-  background: var(--hover-bg);
+section table tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
 }
 
-/* Standings table specific */
-#standings tbody td span {
-  font-weight: bold;
+/* Scrollbar styling for modern browsers */
+section table tbody::-webkit-scrollbar {
+  width: 8px;
 }
 
-/* Results table specific */
-#results table,
-#results table th,
-#results table td {
-  color: #ffffff;
+section table tbody::-webkit-scrollbar-thumb {
+  background-color: var(--accent);
+  border-radius: 4px;
 }
 
-#results table td span {
-  color: var(--winner-color) !important;
-  font-weight: 600;
-}
-
-/* Fixtures list */
-#fixtures-list {
-  list-style: none;
-  padding: 0;
-}
-
-#fixtures-list li {
+section table tbody::-webkit-scrollbar-track {
   background: var(--bg-dark);
-  padding: 10px 12px;
-  margin-bottom: 8px;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  color: #ffffff;
-  transition: 0.2s;
 }
 
-#fixtures-list li:hover {
-  background: var(--hover-bg);
-}
-
-/* Team logos in tables */
-img {
-  vertical-align: middle;
-}
-
-/* Responsive */
-@media (max-width: 900px) {
-  #container {
-    padding: 10px;
-  }
-
-  th, td {
-    padding: 6px;
-    font-size: 14px;
-  }
-
-  section h2 {
-    font-size: 18px;
-  }
+/* Ensure table cells don't overflow */
+th, td {
+  text-align: center;
+  padding: 10px;
+  word-wrap: break-word;
 }
