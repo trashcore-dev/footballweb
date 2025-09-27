@@ -57,6 +57,7 @@ h2 {
 }
 
 #fixtures ul,
+#results ul,
 #news ul {
   list-style: none;
   padding: 0;
