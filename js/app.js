@@ -1,4 +1,4 @@
-const API_KEY = "YOUR_API_KEY_HERE"; // replace with your football-data.org key
+const API_KEY = "8a19b8745c254680a387e705faa6d5f3"; // replace with your football-data.org key
 const BASE_URL = "https://api.football-data.org/v4";
 
 async function fetchAPI(endpoint) {
