@@ -1,0 +1,276 @@
+<!DOCTYPE html><html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Football Leagues Dashboard</title>
+  <style>
+    :root{--bg:#0f1724;--card:#0b1220;--accent:#1e90ff;--muted:#9aa4b2;--glass: rgba(255,255,255,0.03)}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:Inter, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;background:linear-gradient(180deg,#071021 0%, #0b1220 100%);color:#e6eef8}
+    header{display:flex;align-items:center;gap:16px;padding:18px 24px;border-bottom:1px solid rgba(255,255,255,0.04);backdrop-filter: blur(4px)}
+    .logo{display:flex;gap:12px;align-items:center}
+    .logo .dot{width:36px;height:36px;border-radius:8px;background:linear-gradient(135deg,#1e90ff,#00c2a8);display:flex;align-items:center;justify-content:center;font-weight:700}
+    h1{font-size:18px;margin:0}
+    .container{display:grid;grid-template-columns:260px 1fr 360px;gap:18px;padding:20px;max-width:1200px;margin:22px auto}
+    .card{background:var(--card);border-radius:12px;padding:14px;box-shadow: 0 6px 18px rgba(2,6,23,0.6)}/* left: leagues */
+.leagues .search{display:flex;gap:8px;margin-bottom:12px}
+.leagues input{flex:1;padding:8px;border-radius:8px;border:1px solid rgba(255,255,255,0.04);background:transparent;color:inherit}
+.league-list{display:flex;flex-direction:column;gap:8px;max-height:60vh;overflow:auto;padding-right:6px}
+.league-item{display:flex;justify-content:space-between;align-items:center;padding:10px;border-radius:8px;background:var(--glass);cursor:pointer}
+.league-item.active{outline:2px solid rgba(30,144,255,0.16);background:linear-gradient(90deg, rgba(30,144,255,0.04), transparent)}
+
+/* center: standings + fixtures */
+.standings h2{margin:0 0 10px 0;font-size:16px}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th,td{padding:8px;text-align:left;border-bottom:1px solid rgba(255,255,255,0.03)}
+th{color:var(--muted);font-weight:600;font-size:12px}
+tr:hover td{background:rgba(255,255,255,0.01)}
+.team{display:flex;gap:10px;align-items:center}
+.badge{min-width:30px;text-align:center;font-weight:700}
+
+/* right: fixtures + news */
+.fixtures .match{display:flex;justify-content:space-between;gap:8px;padding:10px;border-radius:10px;background:var(--glass);margin-bottom:8px}
+.fixtures .time{color:var(--muted);font-size:13px}
+.news .news-item{padding:10px;border-radius:8px;background:linear-gradient(180deg, rgba(255,255,255,0.01), transparent);margin-bottom:8px}
+.small{font-size:12px;color:var(--muted)}
+
+/* footer controls */
+.controls{display:flex;gap:10px;align-items:center;margin-top:12px}
+.btn{padding:8px 12px;border-radius:8px;border:none;background:var(--accent);color:#041025;cursor:pointer}
+.ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:var(--muted)}
+
+/* responsive */
+@media (max-width:1000px){.container{grid-template-columns:1fr;padding:12px} .container > :not(:first-child){margin-top:12px} .leagues{order:1}}
+
+  </style>
+</head>
+<body>
+  <header>
+    <div class="logo">
+      <div class="dot">FC</div>
+      <div>
+        <h1>Football Leagues Dashboard</h1>
+        <div class="small">Live results · Standings · Upcoming fixtures · News</div>
+      </div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+      <button class="btn" id="refreshBtn">Refresh</button>
+      <button class="ghost" id="settingsBtn">Settings</button>
+    </div>
+  </header>  <main class="container">
+    <!-- LEFT: Leagues -->
+    <aside class="card leagues">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+        <strong>Leagues</strong>
+        <span class="small">Choose one</span>
+      </div>
+      <div class="search">
+        <input id="leagueSearch" placeholder="Search leagues..." />
+      </div>
+      <div class="league-list" id="leagueList">
+        <!-- league items injected here -->
+      </div><div class="controls">
+    <button class="ghost" id="addFakeBtn">+ Add sample</button>
+    <button class="ghost" id="demoBtn">Demo data</button>
+  </div>
+</aside>
+
+<!-- CENTER: Standings and Table -->
+<section class="card standings">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+    <div>
+      <h2 id="leagueTitle">Select a league</h2>
+      <div class="small" id="leagueSubtitle">Standings and results</div>
+    </div>
+    <div class="small" id="lastUpdated">—</div>
+  </div>
+
+  <div style="overflow:auto;max-height:54vh">
+    <table id="standingsTable">
+      <thead>
+        <tr><th>#</th><th>Team</th><th>P</th><th>W</th><th>D</th><th>L</th><th>GF</th><th>GA</th><th>GD</th><th>Pts</th></tr>
+      </thead>
+      <tbody>
+        <!-- rows injected -->
+      </tbody>
+    </table>
+  </div>
+
+  <div style="margin-top:12px;display:flex;gap:8px;align-items:center">
+    <button class="btn" id="viewFixtures">View upcoming matches</button>
+    <button class="ghost" id="viewNews">View news</button>
+  </div>
+</section>
+
+<!-- RIGHT: Fixtures and News -->
+<aside style="display:flex;flex-direction:column;gap:12px">
+  <div class="card fixtures">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <strong>Upcoming matches</strong>
+      <div class="small">Next 7 days</div>
+    </div>
+    <div id="fixturesList" style="max-height:28vh;overflow:auto">
+      <!-- fixtures injected -->
+    </div>
+  </div>
+
+  <div class="card news">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+      <strong>Football news</strong>
+      <div class="small">Latest headlines</div>
+    </div>
+    <div id="newsList" style="max-height:26vh;overflow:auto">
+      <!-- news injected -->
+    </div>
+  </div>
+</aside>
+
+  </main>  <script>
+    // ---------- Sample data (replace with real API calls) ----------
+    const sample = {
+      leagues: [
+        {id: 'epl', name: 'English Premier League'},
+        {id: 'laliga', name: 'LaLiga (Spain)'},
+        {id: 'seriea', name: 'Serie A (Italy)'},
+        {id: 'bundes', name: 'Bundesliga (Germany)'},
+        {id: 'ligue1', name: 'Ligue 1 (France)'}
+      ],
+      standings: {
+        epl: [
+          {pos:1,team:'Manchester City',p:38,w:29,d:6,l:3,gf:95,ga:32,pts:93},
+          {pos:2,team:'Arsenal',p:38,w:26,d:5,l:7,gf:88,ga:36,pts:83},
+          {pos:3,team:'Liverpool',p:38,w:25,d:6,l:7,gf:84,ga:45,pts:81}
+        ],
+        laliga:[{pos:1,team:'Real Madrid',p:38,w:26,d:9,l:3,gf:80,ga:30,pts:87},{pos:2,team:'Barcelona',p:38,w:25,d:8,l:5,gf:85,ga:35,pts:83}],
+        seriea:[{pos:1,team:'Inter',p:38,w:26,d:7,l:5,gf:78,ga:36,pts:85}],
+      },
+      fixtures: {
+        epl:[{date:'2025-09-28T14:00:00Z',home:'Liverpool',away:'Chelsea'},{date:'2025-09-29T16:30:00Z',home:'Arsenal',away:'Man United'}],
+        laliga:[{date:'2025-09-27T20:00:00Z',home:'Real Madrid',away:'Atletico'}]
+      },
+      news:[
+        {title:'Top scorer race tightens',source:'Sky Sports',time:'3h ago',url:'#'},
+        {title:'Injury update: key player doubtful',source:'BBC Sport',time:'5h ago',url:'#'}
+      ]
+    }
+
+    // ---------- App state ----------
+    const state = {selectedLeague: null}
+
+    // ---------- DOM elements ----------
+    const leagueList = document.getElementById('leagueList')
+    const standingsTableBody = document.querySelector('#standingsTable tbody')
+    const fixturesList = document.getElementById('fixturesList')
+    const newsList = document.getElementById('newsList')
+    const leagueTitle = document.getElementById('leagueTitle')
+    const lastUpdated = document.getElementById('lastUpdated')
+
+    // ---------- Render functions ----------
+    function renderLeagues(filter=''){
+      leagueList.innerHTML = ''
+      const items = sample.leagues.filter(l => l.name.toLowerCase().includes(filter.toLowerCase()))
+      items.forEach(l => {
+        const el = document.createElement('div')
+        el.className = 'league-item' + (state.selectedLeague===l.id ? ' active' : '')
+        el.innerHTML = `<div>${l.name}</div><div class="small">${l.id}</div>`
+        el.onclick = () => { selectLeague(l.id) }
+        leagueList.appendChild(el)
+      })
+    }
+
+    function renderStandings(){
+      standingsTableBody.innerHTML = ''
+      const data = sample.standings[state.selectedLeague] || []
+      data.forEach(row => {
+        const gd = row.gf - row.ga
+        const tr = document.createElement('tr')
+        tr.innerHTML = `<td class="badge">${row.pos}</td>
+          <td><div class="team"><div>${row.team}</div></div></td>
+          <td>${row.p}</td><td>${row.w}</td><td>${row.d}</td><td>${row.l}</td>
+          <td>${row.gf}</td><td>${row.ga}</td><td>${gd}</td><td>${row.pts}</td>`
+        standingsTableBody.appendChild(tr)
+      })
+      lastUpdated.textContent = new Date().toLocaleString()
+    }
+
+    function renderFixtures(){
+      fixturesList.innerHTML = ''
+      const data = sample.fixtures[state.selectedLeague] || []
+      if(data.length===0){fixturesList.innerHTML = '<div class="small">No upcoming matches found.</div>';return}
+      data.forEach(m => {
+        const d = new Date(m.date)
+        const el = document.createElement('div')
+        el.className = 'match'
+        el.innerHTML = `<div><strong>${m.home}</strong> <span class="small">vs</span> <strong>${m.away}</strong></div>
+          <div class="time">${d.toLocaleString()}</div>`
+        fixturesList.appendChild(el)
+      })
+    }
+
+    function renderNews(){
+      newsList.innerHTML = ''
+      (sample.news||[]).forEach(n => {
+        const el = document.createElement('div')
+        el.className = 'news-item'
+        el.innerHTML = `<div style="font-weight:600">${n.title}</div>
+          <div class="small">${n.source} · ${n.time}</div>`
+        newsList.appendChild(el)
+      })
+    }
+
+    // ---------- Interactions ----------
+    function selectLeague(id){
+      state.selectedLeague = id
+      document.querySelectorAll('.league-item').forEach(el => el.classList.remove('active'))
+      // mark active
+      const items = Array.from(document.querySelectorAll('.league-item'))
+      const match = items.find(i => i.innerText.toLowerCase().includes(id))
+      if(match) match.classList.add('active')
+      const league = sample.leagues.find(l=>l.id===id)
+      leagueTitle.textContent = league ? league.name : 'League'
+      renderStandings(); renderFixtures(); renderNews()
+    }
+
+    // ---------- Demo controls ----------
+    document.getElementById('leagueSearch').addEventListener('input', e => renderLeagues(e.target.value))
+    document.getElementById('refreshBtn').addEventListener('click', () => { loadFromApi(); })
+    document.getElementById('addFakeBtn').addEventListener('click', () => {
+      sample.leagues.push({id:'cup',name:'Cup Friendly'})
+      renderLeagues();
+    })
+    document.getElementById('demoBtn').addEventListener('click', () => {
+      // auto-select first league
+      if(sample.leagues.length) selectLeague(sample.leagues[0].id)
+    })
+
+    // ---------- Example: how to replace sample data with API calls ----------
+    async function loadFromApi(){
+      /*
+        Example pattern: Replace these calls with your chosen football API.
+        Many providers exist (football-data.org, api-football.com, sportdataapi, etc.)
+        Typical flow:
+          1. Fetch leagues list -> populate left column
+          2. When user selects a league, fetch standings, fixtures, and news for that league
+          3. Handle API keys securely (don't embed keys in frontend for production)
+
+        Example fetch (pseudocode):
+        const res = await fetch('https://api.example.com/leagues', {headers:{'X-API-Key':'YOUR_KEY'}})
+        const json = await res.json(); sample.leagues = json.data; renderLeagues();
+
+        Then fetch standings:
+        const s = await fetch(`https://api.example.com/standings?league=${id}`)
+        sample.standings[id] = await s.json(); renderStandings();
+      */
+
+      // For demo we simulate delay and update timestamp
+      lastUpdated.textContent = 'Fetching...'
+      await new Promise(r => setTimeout(r, 700))
+      lastUpdated.textContent = new Date().toLocaleString()
+      alert('Demo: replaced with real API calls in loadFromApi() (see source comments)')
+    }
+
+    // ---------- Init ----------
+    renderLeagues(); renderNews();
+
+  </script></body>
+</html>
