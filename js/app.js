@@ -1,4 +1,4 @@
-const API_KEY = "8a19b8745c254680a387e705faa6d5f3"; // Replace with your football-data.org key
+const API_KEY = "YOUR_API_KEY_HERE"; // Replace with your football-data.org key
 const BASE_URL = "https://api.football-data.org/v4";
 
 async function fetchAPI(endpoint) {
@@ -33,6 +33,7 @@ async function selectLeague(id, name) {
 
   await loadStandings(id);
   await loadFixtures(id);
+  await loadResults(id); // New: fetch past matches
 }
 
 async function loadStandings(leagueId) {
@@ -69,6 +70,24 @@ async function loadFixtures(leagueId) {
   data.matches.slice(0, 10).forEach((match) => {
     const li = document.createElement("li");
     li.textContent = `${match.utcDate.slice(0, 10)}: ${match.homeTeam.name} vs ${match.awayTeam.name}`;
+    list.appendChild(li);
+  });
+}
+
+async function loadResults(leagueId) {
+  const data = await fetchAPI(
+    `/competitions/${leagueId}/matches?status=FINISHED`
+  );
+  const list = document.getElementById("results-list");
+  list.innerHTML = "";
+
+  if (!data || !data.matches.length) return;
+
+  const recent = data.matches.slice(-10); // last 10 results
+
+  recent.forEach((match) => {
+    const li = document.createElement("li");
+    li.textContent = `${match.utcDate.slice(0, 10)}: ${match.homeTeam.name} ${match.score.fullTime.home} - ${match.score.fullTime.away} ${match.awayTeam.name}`;
     list.appendChild(li);
   });
 }
